@@ -209,8 +209,8 @@ def main(ss):
                "dog", "horse", "motorbike", "person", "pottedplant", "sheep",
                "sofa", "train", "tvmonitor"]
     COLORS = np.random.uniform(0, 255, size=(len(CLASSES), 3))
-    limitForConfidence = 0.7
-    NumberCascade = cv2.CascadeClassifier('haarcascade_russian_plate_number.xml')
+    limit_for_confidence = 0.7
+    number_cascade = cv2.CascadeClassifier('haarcascade_russian_plate_number.xml')
 
     src0 = 'rtsp://...'  # outside camera
     src1 = 'rtsp://...'  # inside camera
@@ -246,8 +246,11 @@ def main(ss):
             print("Incoming camera isn't responding")
             break
         frame = resize(frame, width=720)
+        # Crop the ROI
         height_frame, width_frame = frame.shape[:2]
-        frame = frame[int(0.3 * height_frame):height_frame, 0:width_frame]  #int(0.8 * width_frame)]
+        frame = frame[int(0.3 * height_frame):height_frame, 0:width_frame]
+        
+        # if we get the frame in grayscale format (night mode enable) - convert it to bgr
         try:
             frame = cv2.cvtColor(frame, cv2.COLOR_GRAY2BGR)
         except cv2.error:
@@ -260,8 +263,11 @@ def main(ss):
             print("Outcoming camera isn't responding")
             break
         shot = resize(shot, width=720)
+        # Crop the ROI
         height_shot, width_shot = shot.shape[:2]
         shot = shot[int(0.3 * height_shot):height_shot, 0:width_shot]
+        
+        # if we get the frame in grayscale format (night mode enable) - convert it to bgr
         try:
             shot = cv2.cvtColor(shot, cv2.COLOR_GRAY2BGR)
         except cv2.error:
@@ -290,7 +296,7 @@ def main(ss):
             confidence = detections[0, 0, ind, 2]
             # Filter out weak detections by ensuring the confidence is greater than
             # the minimum confidence
-            if confidence > limitForConfidence:
+            if confidence > limit_for_confidence:
                 # Extract the index of the class labels from detections, then compute
                 # the (x, y)-coordinates of the bounding box for the object
                 idx = int(detections[0, 0, ind, 1])
@@ -305,8 +311,9 @@ def main(ss):
 
                     # looking for a license plate on car frame
                     plaques = []
-                    plaques = NumberCascade.detectMultiScale(car_number, scaleFactor=1.3,
+                    plaques = number_cascade.detectMultiScale(car_number, scaleFactor=1.3,
                                                              minNeighbors=4)
+                    # if any license plate has been found - try to recognize its
                     if len(plaques) > 0 and flag_cnt is False:
                         start = time.time()
                         try:
@@ -338,7 +345,7 @@ def main(ss):
                                 cv2.rectangle(copy_frame, (startX + xx, startY + yy),
                                               (startX + xx + ww, startY + yy + hh), (0, 0, 255), 2)
 
-                            # if license plate was recognized - compare the number with white numbers
+                            # if license plate has been recognized - compare the number with white numbers
                             if len(number_plate) > 0:
                                 print(number_plate)
                                 # if not flag_cnt:
@@ -361,8 +368,6 @@ def main(ss):
                             print('Recursion Error')
                         finish = time.time()
                         print(finish - start, 'at:', datetime.datetime.now(), sep=' ')
-                    # cv2.rectangle(frame, (startX, startY), (endX, endY),
-                    #              COLORS[idx], 2)
                     y = startY - 15 if startY - 15 > 15 else startY + 15
                     cv2.putText(copy_frame, label, (startX, y), cv2.FONT_HERSHEY_SIMPLEX,
                                 0.5, COLORS[idx], 2)
@@ -373,7 +378,7 @@ def main(ss):
             confidence = discoveries[0, 0, index, 2]
             # Filter out weak detections by ensuring the confidence is greater than
             # the minimum confidence
-            if confidence > limitForConfidence:
+            if confidence > limit_for_confidence:
                 # Extract the index of the class labels from detections, then compute
                 # the (x, y)-coordinates of the bounding box for the object
                 idx = int(discoveries[0, 0, index, 1])
@@ -468,4 +473,3 @@ if __name__ == '__main__':
 
     finally:
         s.close()
-        raise SystemExit
