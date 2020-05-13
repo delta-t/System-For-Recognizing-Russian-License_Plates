@@ -1,0 +1,7 @@
+PyQt5
+numpy
+opencv-python
+Pillow
+imutils
+scipy
+pytesseract
