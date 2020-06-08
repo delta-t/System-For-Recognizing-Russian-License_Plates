@@ -1,21 +1,21 @@
 """
 Using Haar cascade classifier for detection russian license plates
 """
-from PyQt5.QtWidgets import QMessageBox, QApplication, QMainWindow
-from PyQt5.QtCore import QThread, pyqtSignal, Qt
-from PyQt5.QtGui import QImage, QPixmap
-from mygui import Ui_MyApp
-from imutils.perspective import four_point_transform
-from PIL import Image
+import re
+import sys
 from os import path
 
-import sys
 import cv2
-import numpy as np
 import imutils
-import scipy.fftpack
+import numpy as np
 import pytesseract
-import re
+import scipy.fftpack
+from PyQt5.QtCore import QThread, pyqtSignal
+from PyQt5.QtGui import QImage, QPixmap
+from PyQt5.QtWidgets import QMessageBox, QApplication, QMainWindow
+from imutils.perspective import four_point_transform
+
+from mygui import UiMyApp
 
 
 class VideoThread(QThread):
@@ -40,14 +40,14 @@ class VideoThread(QThread):
                 return
 
             # Reading and preprocessing
-            _, frame = self.cap.read()
+            ret, frame = self.cap.read()
             frame = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
             gray = cv2.cvtColor(frame, cv2.COLOR_RGB2GRAY)
             gray_filtered = cv2.medianBlur(gray, 5)
             h, w = gray_filtered.shape
             gray_normalized = np.zeros((h, w))
             gray_normalized = cv2.normalize(gray_filtered, gray_normalized, 0, 255, cv2.NORM_MINMAX)
-            
+
             # Looking for a license plate
             plaques = []
             plaques = self.classifier.detectMultiScale(gray_normalized, scaleFactor=1.3, minNeighbors=4)
@@ -74,7 +74,7 @@ class VideoThread(QThread):
                                 if len(approx) == 4:
                                     numCnt = approx
                                     break
-                    
+
                     # trying to transform the plate for recognition
                     if numCnt is not None:
                         # Crop the roi
@@ -129,8 +129,8 @@ class VideoThread(QThread):
 
                         # Filter the image and crop
                         img_filt = scipy.fftpack.fft2(gray_log.copy(), (M, N))
-                        img_out_low = scipy.real(scipy.fftpack.ifft2(img_filt.copy() * h_low_shift, (M, N)))
-                        img_out_high = scipy.real(scipy.fftpack.ifft2(img_filt.copy() * h_high_shift, (M, N)))
+                        img_out_low = np.real(scipy.fftpack.ifft2(img_filt.copy() * h_low_shift, (M, N)))
+                        img_out_high = np.real(scipy.fftpack.ifft2(img_filt.copy() * h_high_shift, (M, N)))
                         # Set scaling factors and add
                         gamma1 = 0.3
                         gamma2 = 1.5
@@ -213,7 +213,7 @@ class VideoThread(QThread):
 class MyWindow(QMainWindow):
     def __init__(self, haar_cascade_filepath, parent=None):
         super(MyWindow, self).__init__(parent)
-        self.ui = Ui_MyApp()
+        self.ui = UiMyApp()
         self.ui.setupUi(self)
         self.ui.number_plate.setText("License plate: - ")
         self.ui.number_plate.adjustSize()

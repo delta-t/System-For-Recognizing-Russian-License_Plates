@@ -6,9 +6,10 @@
 #
 # WARNING! All changes made in this file will be lost!
 
-from PyQt5 import QtCore, QtGui, QtWidgets
+from PyQt5 import QtCore, QtWidgets
 
-class Ui_MyApp(object):
+
+class UiMyApp(object):
     def setupUi(self, MyApp):
         MyApp.setObjectName("MyApp")
         MyApp.resize(660, 600)
@@ -37,4 +38,3 @@ class Ui_MyApp(object):
         MyApp.setWindowTitle(_translate("MyApp", "Automatic License Plate Recognition"))
         self.start_app_button.setText(_translate("MyApp", "Start"))
         self.stop_app_button.setText(_translate("MyApp", "Stop"))
-

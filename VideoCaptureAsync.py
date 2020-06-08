@@ -1,12 +1,14 @@
-import cv2
 import threading
 import time
+
+import cv2
 
 
 class VideoCaptureAsync:
     """
     Get some frames from video device using thread.
     """
+
     def __init__(self, src, width=640, height=480):
         # initialize the video camera stream, read the first frame
         # from the stream and initialize the thread
@@ -29,7 +31,7 @@ class VideoCaptureAsync:
     def start(self):
         # start the thread to read frames from the video device
         if self.started:
-            print('[!] Asynchroneous video capturing has already been started.')
+            print('[!] Asynchronous video capturing already has been started.')
             return None
         self.thread.start()
         # set the thread indicator
@@ -56,10 +58,6 @@ class VideoCaptureAsync:
         # indicate that the thread should be stopped and join
         self.started = False
         self.thread.join()
-
-    def __exit__(self):
-        # stop and join the thread and release video device
-        self.stop()
         self.cap.release()
 
 
@@ -67,13 +65,13 @@ if __name__ == '__main__':
     cap = VideoCaptureAsync(src=0).start()
     time.sleep(2.0)
     while True:
-        ret, snapshot = cap.read()
+        ret, frame = cap.read()
         if ret:
-            cv2.imshow("Stream", snapshot)
+            cv2.imshow("Stream", frame)
             if cv2.waitKey(1) & 0xFF == ord('q'):
                 break
         else:
             print("Camera is not responding")
             break
-    cap.__exit__()
+    cap.stop()
     cv2.destroyAllWindows()
