@@ -1,5 +1,5 @@
 <div align="center">
- ![Image](https://github.com/newman001/System-For-Recognizing-Russian-License_Plates/blob/master/images/img4.png)
+ ![Image](images/img4.png)
 </div>
 ### System-For-Recognizing-Russian-License_Plates
 This system based on classic computer vision methods for video frames preprocessing and used Pytesseract for optical character recognition
@@ -8,9 +8,9 @@ This system based on classic computer vision methods for video frames preprocess
 2) Install all necessary packages from requirements.txt
 3) (temporarily) move file 'haarcascade_russian_plate_number.xml' from OpenCV module to current directory;
 ### Run main.py
-![Correct result](https://github.com/newman001/System-For-Recognizing-Russian-License_Plates/blob/master/images/img2.png)
+![Correct result](images/img2.png)
 ### Some incorrect cases:
-![First](https://github.com/newman001/System-For-Recognizing-Russian-License_Plates/blob/master/images/img3.jpg)
-![Second](https://github.com/newman001/System-For-Recognizing-Russian-License_Plates/blob/master/images/img1.jpg)
+![First](images/img3.jpg)
+![Second](images/img1.jpg)
 
 
