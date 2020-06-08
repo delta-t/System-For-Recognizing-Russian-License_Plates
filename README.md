@@ -1,6 +1,4 @@
-<div align="center">
- ![Image](images/img4.png)
-</div>
+![Image](images/img4.png)
 ### System-For-Recognizing-Russian-License_Plates
 This system based on classic computer vision methods for video frames preprocessing and used Pytesseract for optical character recognition
 ### Before starting
@@ -12,5 +10,3 @@ This system based on classic computer vision methods for video frames preprocess
 ### Some incorrect cases:
 ![First](images/img3.jpg)
 ![Second](images/img1.jpg)
-
-
